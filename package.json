@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "connect": "latest",
+    "serve-static": "latest"
+  },
+  "name": "static_site",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Micheal Payne <mrpayne63@gmail.com>",
+  "license": "ISC"
+}
