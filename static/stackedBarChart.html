@@ -24,12 +24,11 @@ function drawChart() {
 	            title: 'THE HOSPICE OF THE FLA SUNCOAST',
 	            subtitle: 'Select Cost Centers for 2013-2016',
 	          },
-	         
       isStacked:true	  
    };  
 
    // Instantiate and draw the chart.
-   var chart = new google.visualization.ColumnChart(document.getElementById('container'));
+   var chart = new google.visualization.BarChart(document.getElementById('container'));
    chart.draw(data, options);
 }
 google.charts.setOnLoadCallback(drawChart);
