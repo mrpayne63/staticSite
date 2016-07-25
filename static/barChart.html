@@ -6,17 +6,17 @@
       google.charts.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses', 'Profit'],
-          ['2014', 1000, 400, 200],
-          ['2015', 1170, 460, 250],
-          ['2016', 660, 1120, 300],
-          ['2017', 1030, 540, 350]
+          ['Year', '1500PHYSICIAN SERVICES', '1600NURSING CARE', '1700PHYSICAL THERAPY','1800OCCUPATIONAL THERAPY','1900SPEECH/LANGUAGE PATHOLOGY'],
+          ['2013', 3833881, 21988746, 341064, 1790500, 1733100],
+          ['2014', 4178930, 21329083, 409276, 1987400, 1819700],
+          ['2015', 4555034, 20689211, 491132, 2206000, 1910700],
+          ['2016', 4964987, 20068534, 589358, 2448700, 2006200]
         ]);
 
         var options = {
           chart: {
-            title: 'Company Performance',
-            subtitle: 'Sales, Expenses, and Profit: 2014-2017',
+            title: 'THE HOSPICE OF THE FLA SUNCOAST',
+            subtitle: 'Select Cost Centers for 2013-2016',
           },
           bars: 'horizontal' // Required for Material Bar Charts.
         };
