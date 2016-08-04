@@ -51,7 +51,7 @@ if(prod) {
 	"SELECT *,2013 myyear FROM HOSPC.HOSPC_2013_CLXN where cmsid = " + entity + " and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')"
 	+ " union "+
 	"SELECT *,2014 myyear FROM HOSPC.HOSPC_2014_CLXN where cmsid = " + entity + " and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')";
-	sql3 = "SELECT distinct(cmsid) entity FROM HOSPC.HOSPC_2009_CLXN where cmsid in ('101537','101529','101500','101508','421555','101515','451520','101518');"
+	sql3 = "SELECT distinct(cmsid) entity FROM HOSPC.HOSPC_2009_CLXN where cmsid in ('101537','101529','101500','101508','421555','101515','451520','101518','051511');"
 
 }
 if (!fs.existsSync(baseDir)) {
@@ -143,7 +143,7 @@ connection3.query(sql3,function(err, rows) {
 	//console.log(sql3);
 	var tmpString = '';
 	var indexpage = '<html>	<head><title>Hospice Charts</title></head><body>\n';
-	var myfile3 = 'make2Charts.sh';
+	var myfile3 = 'make3Charts.sh';
 	for (var i = 0; i < rows.length; i++) {
 		indexpage += '<a href="'+ rows[i].entity+'sb.html">'+rows[i].entity+ ' Stacked Bar Chart </a><br />\n';
 		indexpage += '<a href="'+ rows[i].entity+'sc.html">'+rows[i].entity+ ' Stacked Column Chart </a><br />\n';
