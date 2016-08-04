@@ -22,10 +22,8 @@ var entity = process.argv[2];
 var db = 'localhost';
 var schema = 'HOSPC';
 var table = 'hospc_2013_DATA';
-var tmpSheetLetter = 'FIRST';
-var lastEntity;
 var lastReport;
-var prod = true;
+var prod = false;
 var baseDir = 'static2/';
 var sql = "select ITEM from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
 
@@ -132,17 +130,6 @@ connection.query(sql,function(err, rows) {
 } // end top for loop
 	//var entityName = myRows.join(':');//[0].ITEM + ',' + rows[1].ITEM; //+ ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM ; 
 	//console.log(entityName);
-	fs.writeFile(myfile, entityName, function(err) {
-        if (err)
-            throw err;
-       // console.log(myfile + ' saved');
-
-        	//process.exit(0);
-       // var array = fs.readFileSync(myfile2).toString().split("\n");
-        
-        //console.log(array);
-
-    });
 	
 
 }); // end connection callback
@@ -153,10 +140,10 @@ connection3.query(sql3,function(err, rows) {
 	//console.log(rows[0].ITEM + ',' + rows[1].ITEM + ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM);
 	//console.log(sql3);
 	var tmpString = '';
-	var myfile3 = 'makeDataArray.sh';
+	var myfile3 = 'makeStackedColumCharts.sh';
 	for (var i = 0; i < rows.length; i++) {
 		tmpString += "echo ' writing array for "+rows[i].entity +" ';\n ";
-		tmpString += 'node makeHTML.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'.html;\n';
+		tmpString += 'node makeStackedColumnChart.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'sc.html;\n';
 	//	for (i = 0; i < 1; i++) {
 		//console.log(rows[i].entity);
 		//myRows[i] = rows[i].ITEM;
@@ -291,47 +278,14 @@ connection2.query(sql2,    function(err, rows2) {
     console.log(' isStacked:true\n };');
     
     console.log("// Instantiate and draw the chart.");
-    console.log("var chart = new google.visualization.BarChart(document.getElementById('container'));");
+    console.log("var chart = new google.visualization.ColumnChart(document.getElementById('container'));");
     console.log(" chart.draw(data, options);");
     console.log("}");
     console.log("google.charts.setOnLoadCallback(drawChart);");
     console.log(' </script> </body> </html>');
     
-    
-    
-   
- 
- 
 
-    
-    
-    var myfile2 = baseDir + entity + '.csv';
-    var csv4 = dataArray.map(function(d) {
-		return JSON.stringify(d);
-	}).join('\n');
-
-    fs.writeFile(myfile2, csv4, function(err) {
-        if (err)
-            throw err;
-       // console.log(myfile2 + ' saved');
-
-        	//process.exit(0);
-
-    });
-    myfile2 = baseDir + entity + '.array';
-    fs.writeFile(myfile2, JSON.stringify(dataArray), function(err) {
-        if (err)
-            throw err;
-       // console.log(myfile2 + ' saved');
-
-        	process.exit(0);
-       // var array = fs.readFileSync(myfile2).toString().split("\n");
-        
-        //console.log(array);
-
-    });
-    
-    
+    process.exit(0);
 }); // end connection2 callback
 
    
