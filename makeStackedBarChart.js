@@ -24,6 +24,7 @@ var schema = 'HOSPC';
 var table = 'hospc_2013_DATA';
 var lastReport;
 var prod = true;
+var entityName = '';
 var baseDir = 'static2/';
 var sql = "select ITEM from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
 
@@ -118,14 +119,15 @@ for(var i=0;i<7;i++){
 connection.query(sql,function(err, rows) {
 	//console.log(rows[0].ITEM + ',' + rows[1].ITEM + ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM);
 	var myfile = baseDir + entity + '.name';
-	var entityName = '';
+	
 	for (var i = 0; i < rows.length; i++) {
 		
 		
 	//	for (i = 0; i < 1; i++) {
 		//console.log(rows[i].ITEM);
 		myRows[i] = rows[i].ITEM.toString().trim();
-		entityName +=  rows[i].ITEM.toString() + '\n';
+		entityName +=  rows[i].ITEM.toString() 
+		entityName +=  '<br />\n';
 		//console.log("XXX " + entityName);
 } // end top for loop
 	//var entityName = myRows.join(':');//[0].ITEM + ',' + rows[1].ITEM; //+ ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM ; 
@@ -183,7 +185,7 @@ connection2.query(sql2,    function(err, rows2) {
 	console.log('<script type="text/javascript">');
 	console.log("google.charts.load('current', {packages: ['corechart']});");
 	console.log("</script></head><body>");
-	console.log("<center><h3>"+myRows[0]+"</h3></center>");
+	console.log("<center><h3>"+entityName+"</h3></center>");
 	console.log('<div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>');
 	console.log('<script language="JavaScript">');
 	console.log('function drawChart() {\n // Define the chart to be drawn.');
@@ -275,6 +277,7 @@ connection2.query(sql2,    function(err, rows2) {
      
    // console.log(' subtitle: \'Selected Cost Centers for 2009-2014\'');
     console.log("legend: { position: 'top', maxLines: 5 },");
+    console.log("title:'Selected Cost Centers 2009 - 2014',");
     console.log(' isStacked:true\n };');
     
     console.log("// Instantiate and draw the chart.");

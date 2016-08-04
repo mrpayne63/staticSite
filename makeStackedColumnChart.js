@@ -24,8 +24,9 @@ var schema = 'HOSPC';
 var table = 'hospc_2013_DATA';
 var lastReport;
 var prod = true;
+var entityName = '';
 var baseDir = 'static2/';
-var sql = "select ITEM from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
+var sql = "select distinct(ITEM) from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
 
 var sql2 = "SELECT *, 2013 myyear from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity
 +"  and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')"
@@ -38,7 +39,7 @@ if(prod) {
 	baseDir = 'static2/';
 	db = '10.10.10.11';
 	//entity = 101508;
-	sql = "select ITEM from HOSPC.HOSPC_2009_CLXN  where cmsid  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
+	sql = "select distinct(ITEM) from HOSPC.HOSPC_2009_CLXN  where cmsid  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
 	sql2 = "SELECT *,2009 myyear FROM HOSPC.HOSPC_2009_CLXN where cmsid = " + entity + " and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')"
 	+ " union "+
 	" SELECT *,2010 myyear FROM HOSPC.HOSPC_2010_CLXN where cmsid =  " + entity + "  and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')"
@@ -118,14 +119,14 @@ for(var i=0;i<7;i++){
 connection.query(sql,function(err, rows) {
 	//console.log(rows[0].ITEM + ',' + rows[1].ITEM + ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM);
 	var myfile = baseDir + entity + '.name';
-	var entityName = '';
 	for (var i = 0; i < rows.length; i++) {
 		
 		
 	//	for (i = 0; i < 1; i++) {
 		//console.log(rows[i].ITEM);
 		myRows[i] = rows[i].ITEM.toString().trim();
-		entityName +=  rows[i].ITEM.toString() + '\n';
+		entityName +=  rows[i].ITEM.toString();
+		entityName +=  '<br />\n';
 		//console.log("XXX " + entityName);
 } // end top for loop
 	//var entityName = myRows.join(':');//[0].ITEM + ',' + rows[1].ITEM; //+ ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM ; 
@@ -140,7 +141,7 @@ connection3.query(sql3,function(err, rows) {
 	//console.log(rows[0].ITEM + ',' + rows[1].ITEM + ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM);
 	//console.log(sql3);
 	var tmpString = '';
-	var myfile3 = 'makeStackedColumCharts.sh';
+	var myfile3 = 'makeStackedColumnCharts.sh';
 	for (var i = 0; i < rows.length; i++) {
 		tmpString += "echo ' writing array for "+rows[i].entity +" ';\n ";
 		tmpString += 'node makeStackedColumnChart.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'sc.html;\n';
@@ -176,14 +177,15 @@ dataArray[6][0] = '2014';
 //console.log(sql2);
 connection2.query(sql2,    function(err, rows2) {
 	console.log('<html>	<head><title>');
-	console.log(myRows[0]);
+	console.log(myRows[0] + '<br />');
+	console.log(myRows[0] + '<br />');
 	console.log('</title>');
 	
 	console.log('<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>');
 	console.log('<script type="text/javascript">');
 	console.log("google.charts.load('current', {packages: ['corechart']});");
 	console.log("</script></head><body>");
-	console.log("<center><h3>"+myRows[0]+"</h3></center>");
+	console.log("<center><h3>"+entityName+"</h3></center>");
 	console.log('<div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>');
 	console.log('<script language="JavaScript">');
 	console.log('function drawChart() {\n // Define the chart to be drawn.');
@@ -275,6 +277,7 @@ connection2.query(sql2,    function(err, rows2) {
      
    // console.log(' subtitle: \'Selected Cost Centers for 2009-2014\'');
     console.log("legend: { position: 'top', maxLines: 5 },");
+    console.log("title:'Selected Cost Centers 2009 - 2014',");
     console.log(' isStacked:true\n };');
     
     console.log("// Instantiate and draw the chart.");
