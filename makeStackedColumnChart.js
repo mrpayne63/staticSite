@@ -23,7 +23,7 @@ var db = 'localhost';
 var schema = 'HOSPC';
 var table = 'hospc_2013_DATA';
 var lastReport;
-var prod = true;
+var prod = false;
 var entityName = '';
 var baseDir = 'static2/';
 var sql = "select distinct(ITEM) from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
@@ -177,7 +177,6 @@ dataArray[6][0] = '2014';
 //console.log(sql2);
 connection2.query(sql2,    function(err, rows2) {
 	console.log('<html>	<head><title>');
-	console.log(myRows[0] + '<br />');
 	console.log(myRows[0] + '<br />');
 	console.log('</title>');
 	
