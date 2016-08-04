@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "connect": "latest",
-    "serve-static": "latest"
+    "serve-static": "latest",
+    "mysql": "latest"
   },
   "name": "static_site",
   "description": "",
