@@ -23,7 +23,7 @@ var db = 'localhost';
 var schema = 'HOSPC';
 var table = 'hospc_2013_DATA';
 var lastReport;
-var prod = true;
+var prod = false;
 var entityName = '';
 var baseDir = 'static2/';
 var sql = "select ITEM from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
@@ -142,8 +142,12 @@ connection3.query(sql3,function(err, rows) {
 	//console.log(rows[0].ITEM + ',' + rows[1].ITEM + ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM);
 	//console.log(sql3);
 	var tmpString = '';
+	var indexpage = '<html>	<head><title>Hospice Charts</title></head><body>\n';
 	var myfile3 = 'makeStackedBarCharts.sh';
 	for (var i = 0; i < rows.length; i++) {
+		indexpage += '<a href="'+ rows[i].entity+'sb.html">'+rows[i].entity+ ' Stacked Bar Chart </a><br />\n';
+		indexpage += '<a href="'+ rows[i].entity+'sc.html">'+rows[i].entity+ ' Stacked Column Chart </a><br />\n';
+		
 		tmpString += "echo ' writing array for "+rows[i].entity +" ';\n ";
 		tmpString += 'node makeStackedBarChart.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'sb.html;\n';
 	//	for (i = 0; i < 1; i++) {
@@ -155,6 +159,18 @@ connection3.query(sql3,function(err, rows) {
 	//var entityName = myRows.join(':');//[0].ITEM + ',' + rows[1].ITEM; //+ ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM ; 
 	//console.log(entityName);
 	fs.writeFile(myfile3, tmpString, function(err) {
+        if (err)
+            throw err;
+       // console.log(myfile3 + ' saved');
+
+        	//process.exit(0);
+       // var array = fs.readFileSync(myfile2).toString().split("\n");
+        
+        //console.log(array);
+
+    });	
+	indexpage += '</body>\n';
+	fs.writeFile('static2/index.html',indexpage , function(err) {
         if (err)
             throw err;
        // console.log(myfile3 + ' saved');
@@ -185,6 +201,7 @@ connection2.query(sql2,    function(err, rows2) {
 	console.log('<script type="text/javascript">');
 	console.log("google.charts.load('current', {packages: ['corechart']});");
 	console.log("</script></head><body>");
+	console.log('<a href="index.html">Home</a><br />\n');
 	console.log("<center><h3>"+entityName+"</h3></center>");
 	console.log('<div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>');
 	console.log('<script language="JavaScript">');

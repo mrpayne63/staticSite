@@ -26,7 +26,7 @@ var lastReport;
 var prod = false;
 var entityName = '';
 var baseDir = 'static2/';
-var sql = "select distinct(ITEM) from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
+var sql = "select ITEM from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
 
 var sql2 = "SELECT *, 2013 myyear from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity
 +"  and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')"
@@ -51,7 +51,7 @@ if(prod) {
 	"SELECT *,2013 myyear FROM HOSPC.HOSPC_2013_CLXN where cmsid = " + entity + " and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')"
 	+ " union "+
 	"SELECT *,2014 myyear FROM HOSPC.HOSPC_2014_CLXN where cmsid = " + entity + " and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')";
-	sql3 = "SELECT distinct(cmsid) entity FROM HOSPC.HOSPC_2009_CLXN;"
+	sql3 = "SELECT distinct(cmsid) entity FROM HOSPC.HOSPC_2009_CLXN where cmsid in ('101537','101529','101500','101508','421555','101515','451520','101518');"
 
 }
 if (!fs.existsSync(baseDir)) {
@@ -119,13 +119,14 @@ for(var i=0;i<7;i++){
 connection.query(sql,function(err, rows) {
 	//console.log(rows[0].ITEM + ',' + rows[1].ITEM + ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM);
 	var myfile = baseDir + entity + '.name';
+	
 	for (var i = 0; i < rows.length; i++) {
 		
 		
 	//	for (i = 0; i < 1; i++) {
 		//console.log(rows[i].ITEM);
 		myRows[i] = rows[i].ITEM.toString().trim();
-		entityName +=  rows[i].ITEM.toString();
+		entityName +=  rows[i].ITEM.toString() 
 		entityName +=  '<br />\n';
 		//console.log("XXX " + entityName);
 } // end top for loop
@@ -141,10 +142,14 @@ connection3.query(sql3,function(err, rows) {
 	//console.log(rows[0].ITEM + ',' + rows[1].ITEM + ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM);
 	//console.log(sql3);
 	var tmpString = '';
-	var myfile3 = 'makeStackedColumnCharts.sh';
+	var indexpage = '<html>	<head><title>Hospice Charts</title></head><body>\n';
+	var myfile3 = 'make2Charts.sh';
 	for (var i = 0; i < rows.length; i++) {
+		indexpage += '<a href="'+ rows[i].entity+'sb.html">'+rows[i].entity+ ' Stacked Bar Chart </a><br />\n';
+		indexpage += '<a href="'+ rows[i].entity+'sc.html">'+rows[i].entity+ ' Stacked Column Chart </a><br />\n';
+		indexpage += '<a href="'+ rows[i].entity+'_2charts.html">'+rows[i].entity+ ' Both Stacked Column and Bar Charts </a><br />\n';
 		tmpString += "echo ' writing array for "+rows[i].entity +" ';\n ";
-		tmpString += 'node makeStackedColumnChart.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'sc.html;\n';
+		tmpString += 'node make2Charts.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'_2charts.html;\n';
 	//	for (i = 0; i < 1; i++) {
 		//console.log(rows[i].entity);
 		//myRows[i] = rows[i].ITEM;
@@ -154,6 +159,18 @@ connection3.query(sql3,function(err, rows) {
 	//var entityName = myRows.join(':');//[0].ITEM + ',' + rows[1].ITEM; //+ ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM ; 
 	//console.log(entityName);
 	fs.writeFile(myfile3, tmpString, function(err) {
+        if (err)
+            throw err;
+       // console.log(myfile3 + ' saved');
+
+        	//process.exit(0);
+       // var array = fs.readFileSync(myfile2).toString().split("\n");
+        
+        //console.log(array);
+
+    });	
+	indexpage += '</body>\n';
+	fs.writeFile('static2/index.html',indexpage , function(err) {
         if (err)
             throw err;
        // console.log(myfile3 + ' saved');
@@ -177,7 +194,7 @@ dataArray[6][0] = '2014';
 //console.log(sql2);
 connection2.query(sql2,    function(err, rows2) {
 	console.log('<html>	<head><title>');
-	console.log(myRows[0] + '<br />');
+	console.log(myRows[0]);
 	console.log('</title>');
 	
 	console.log('<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>');
@@ -186,7 +203,8 @@ connection2.query(sql2,    function(err, rows2) {
 	console.log("</script></head><body>");
 	console.log('<a href="index.html">Home</a><br />\n');
 	console.log("<center><h3>"+entityName+"</h3></center>");
-	console.log('<div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>');
+	console.log('<div id="barcontainer" style="width: 550px; height: 400px; margin: 0 auto"></div>');
+	console.log('<div id="colcontainer" style="width: 550px; height: 400px; margin: 0 auto"></div>');
 	console.log('<script language="JavaScript">');
 	console.log('function drawChart() {\n // Define the chart to be drawn.');
 	
@@ -281,13 +299,15 @@ connection2.query(sql2,    function(err, rows2) {
     console.log(' isStacked:true\n };');
     
     console.log("// Instantiate and draw the chart.");
-    console.log("var chart = new google.visualization.ColumnChart(document.getElementById('container'));");
+    console.log("var chart = new google.visualization.BarChart(document.getElementById('barcontainer'));");
+    console.log("var chart2 = new google.visualization.ColumnChart(document.getElementById('colcontainer'));");
     console.log(" chart.draw(data, options);");
+    console.log(" chart2.draw(data, options);");
     console.log("}");
     console.log("google.charts.setOnLoadCallback(drawChart);");
     console.log(' </script> </body> </html>');
     
-
+   
     process.exit(0);
 }); // end connection2 callback
 
