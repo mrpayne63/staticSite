@@ -23,7 +23,7 @@ var db = 'localhost';
 var schema = 'HOSPC';
 var table = 'hospc_2013_DATA';
 var lastReport;
-var prod = false;
+var prod = true;
 var entityName = '';
 var baseDir = 'static2/';
 var sql = "select ITEM from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";
@@ -145,10 +145,11 @@ connection3.query(sql3,function(err, rows) {
 	var indexpage = '<html>	<head><title>Hospice Charts</title></head><body>\n';
 	var myfile3 = 'make3Charts.sh';
 	for (var i = 0; i < rows.length; i++) {
-		indexpage += '<a href="'+ rows[i].entity+'sb.html">'+rows[i].entity+ ' Stacked Bar Chart </a><br />\n';
-		indexpage += '<a href="'+ rows[i].entity+'sc.html">'+rows[i].entity+ ' Stacked Column Chart </a><br />\n';
-		indexpage += '<a href="'+ rows[i].entity+'_2charts.html">'+rows[i].entity+ ' Both Stacked Column and Bar Charts </a><br />\n';
-		indexpage += '<a href="'+ rows[i].entity+'_3charts.html">'+rows[i].entity+ ' Both Stacked Column and 2 Bar Charts </a><br />\n';
+		indexpage += '<p>' + myRows[0] + ' <br />'
+		indexpage += '<a href="'+ rows[i].entity+'sb.html">Stacked Bar Chart </a><br />\n';
+		indexpage += '<a href="'+ rows[i].entity+'sc.html">Stacked Column Chart </a><br />\n';
+		indexpage += '<a href="'+ rows[i].entity+'_2charts.html">Both Stacked Column and Bar Charts </a><br />\n';
+		indexpage += '<a href="'+ rows[i].entity+'_3charts.html">Both Stacked Column and 2 Bar Charts </a><br /></p>\n';
 		tmpString += "echo ' writing array for "+rows[i].entity +" ';\n ";
 		tmpString += 'node make3Charts.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'_3charts.html;\n';
 	//	for (i = 0; i < 1; i++) {
