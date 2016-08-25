@@ -4,9 +4,9 @@ var mysql = require('mysql');
 var db = 'localhost';
 var schema = 'HOSPC';
 var table = 'hospc_2013_DATA';
-var prod = true;
+var prod = false;
 
-var baseDir = 'static2/';
+var baseDir = 'static/';
 
 
 var sql3 = "SELECT RPT_REC_NUM entity, ITEM from "+schema+"."+table + " where RPT_REC_NUM in ('33962','34912','33880','35273','34474','37593','35517','421555','101515','451520','101518','051511') and  WKSHT_CD = 'S100000' and LINE_NUM = '00100' and CLMN_NUM = '0100'";
@@ -94,7 +94,7 @@ connection3.query(sql3,function(err, rows) {
 } // end top for loop
 
 	indexpage += '</body>\n';
-	fs.writeFile('static2/index.html',indexpage , function(err) {
+	fs.writeFile(baseDir + 'index.html',indexpage , function(err) {
         if (err)
             throw err;
         process.exit();

@@ -33,7 +33,8 @@ var sql2 = "SELECT *, 2013 myyear from "+schema+"."+table+"  where RPT_REC_NUM  
 + "union SELECT *, 2014 myyear from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity
 +"  and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')";
 
-var sql3 = "SELECT distinct(RPT_REC_NUM) entity from "+schema+"."+table;
+var sql3 = "SELECT distinct(RPT_REC_NUM) entity from "+schema+"."+table+ " where " +
+" RPT_REC_NUM in (31394,32352,32494,32589,32672,32675,33085,33229,33312,33471,33962)";
 
 if(prod) {	
 	baseDir = 'static2/';
@@ -58,9 +59,8 @@ if (!fs.existsSync(baseDir)) {
     fs.mkdirSync(baseDir);
 }
 
-
 //console.log(sql);
-
+var myRows = new Array();
 var connection = mysql.createConnection({
     host : db,
     user : 'nodeuser',
@@ -106,16 +106,23 @@ connection3.connect(function(err) {
     }
 });
 
-var myRows = new Array();
+
 
 var dataArray = createArray(7,6);
-for(var i=0;i<7;i++){
-	for(var j =0;j<6;j++){
+for(var i=0;i<dataArray.length;i++){
+	for(var j =0;j<dataArray[i].length;j++){
 		dataArray[i][j] = 0;
 	}
 	
 }
 
+var dataArray2 = createArray(7,7);
+for(var i=0;i<dataArray.length;i++){
+	for(var j =0;j<dataArray[i].length;j++){
+		dataArray[i][j] = 0;
+	}
+	
+}
 connection.query(sql,function(err, rows) {
 	//console.log(rows[0].ITEM + ',' + rows[1].ITEM + ',' +rows[2].ITEM + ',' +rows[3].ITEM + ',' +rows[4].ITEM);
 	var myfile = baseDir + entity + '.name';
@@ -145,11 +152,11 @@ connection3.query(sql3,function(err, rows) {
 	var indexpage = '<html>	<head><title>Hospice Charts</title></head><body>\n';
 	var myfile3 = 'make3Charts.sh';
 	for (var i = 0; i < rows.length; i++) {
-		indexpage += '<p>' + myRows[0] + ' <br />'
-		indexpage += '<a href="'+ rows[i].entity+'sb.html">Stacked Bar Chart </a><br />\n';
-		indexpage += '<a href="'+ rows[i].entity+'sc.html">Stacked Column Chart </a><br />\n';
+		indexpage += '<p>Entity ID ' + rows[i].entity + ' <br />'
+		indexpage += '<a href="'+ rows[i].entity+'_bar.html">Bar Chart </a><br />\n';
+		indexpage += '<a href="'+ rows[i].entity+'_sbar.html">Stacked Bar  Chart </a><br />\n';
 		indexpage += '<a href="'+ rows[i].entity+'_2charts.html">Both Stacked Column and Bar Charts </a><br />\n';
-		indexpage += '<a href="'+ rows[i].entity+'_3charts.html">Both Stacked Column and 2 Bar Charts </a><br /></p>\n';
+		indexpage += '<a href="'+ rows[i].entity+'_3charts.html">Multiple Charts </a><br /></p>\n';
 		tmpString += "echo ' writing array for "+rows[i].entity +" ';\n ";
 		tmpString += 'node make3Charts.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'_3charts.html;\n';
 	//	for (i = 0; i < 1; i++) {
@@ -208,6 +215,7 @@ connection2.query(sql2,    function(err, rows2) {
 	console.log('<div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>');
 	console.log('<div id="barcontainer" style="width: 550px; height: 400px; margin: 0 auto"></div>');
 	console.log('<div id="colcontainer" style="width: 550px; height: 400px; margin: 0 auto"></div>');
+	console.log('<div id="combocontainer" style="width: 550px; height: 400px; margin: 0 auto"></div>');
 	
 	console.log('<script language="JavaScript">');
 	console.log('function drawChart() {\n // Define the chart to be drawn.');
@@ -219,6 +227,7 @@ connection2.query(sql2,    function(err, rows2) {
     	dataArray[0][3] = 'PHYSICAL THERAPY';
     		dataArray[0][4] = 'OCCUPATIONAL THERAPY';
     			dataArray[0][5] = 'SPEECH/LANGUAGE PATHOLOGY';
+    			//dataArray[0][6] = 'HIGH';
  
     //, '1500PHYSICIAN SERVICES', , ,,];
    //                                                  // ['2013', 3833881, 21988746, 341064, 1790500, 1733100],
@@ -289,9 +298,19 @@ connection2.query(sql2,    function(err, rows2) {
 
     
     console.log(dataArray);
+    
+    console.log(');\n');
+    var dataArray2 = dataArray;
+    for(var i=0;i<dataArray2.length;i++){
+    	dataArray2[i][6]= dataArray2[i][1]+dataArray2[i][2]+dataArray2[i][3]+dataArray2[i][4]+dataArray2[i][5];
+    }
+    
+    console.log('var data2 = google.visualization.arrayToDataTable(');
+    console.log(dataArray2);
+    
+    console.log(');\n');
     var mystring = myRows[0] + "'";
-    console.log(');\n'+
-    		'var options = {');//\n chart: {');
+    console.log('var options = {');//\n chart: {');
     //console.log("title:");
     //console.log("\'" + 	myRows[0].trim() );
     //console.log("\',");
@@ -302,7 +321,7 @@ connection2.query(sql2,    function(err, rows2) {
     console.log("title:'Selected Cost Centers 2009 - 2014',");
     console.log(' isStacked:true\n };');
     
-    console.log('var options2 = {');//\n chart: {');
+    console.log('var options3 = {');//\n chart: {');
 //console.log("title:");
 //console.log("\'" + 	myRows[0].trim() );
 //console.log("\',");
@@ -312,14 +331,32 @@ connection2.query(sql2,    function(err, rows2) {
 console.log("legend: { position: 'top', maxLines: 5 },");
 console.log("title:'Selected Cost Centers 2009 - 2014'");
 console.log(' };');
+
+console.log('var options4 = {');//\n chart: {');
+//console.log("title:");
+//console.log("\'" + 	myRows[0].trim() );
+//console.log("\',");
+
+
+//console.log(' subtitle: \'Selected Cost Centers for 2009-2014\'');
+console.log("legend: { position: 'top', maxLines: 5 },");
+console.log("title:'Selected Cost Centers 2009 - 2014',");
+console.log("isStacked:true,");
+console.log(" vAxis: {title: 'Millions'},");
+console.log("hAxis: {title: 'Years'},");
+console.log("seriesType: 'bars',");
+console.log(" series: {5: {type: 'line'}}");
+console.log(' };');
     
     console.log("// Instantiate and draw the chart.");
     console.log("var chart3 = new google.visualization.BarChart(document.getElementById('container'));");
     console.log("var chart = new google.visualization.BarChart(document.getElementById('barcontainer'));");
     console.log("var chart2 = new google.visualization.ColumnChart(document.getElementById('colcontainer'));");
+    console.log("var chart4 = new google.visualization.BarChart(document.getElementById('combocontainer'));");
     console.log(" chart.draw(data, options);");
     console.log(" chart2.draw(data, options);");
-    console.log(" chart3.draw(data, options2);");
+    console.log(" chart3.draw(data, options3);");
+    console.log(" chart4.draw(data2, options4);");
     console.log("}");
     console.log("google.charts.setOnLoadCallback(drawChart);");
     console.log(' </script> </body> </html>');

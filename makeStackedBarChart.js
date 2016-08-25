@@ -33,7 +33,8 @@ var sql2 = "SELECT *, 2013 myyear from "+schema+"."+table+"  where RPT_REC_NUM  
 + "union SELECT *, 2014 myyear from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity
 +"  and WKSHT_CD = 'A000000' and CLMN_NUM in('1000') and LINE_NUM in ('01500','01600','01700','01800','01900')";
 
-var sql3 = "SELECT distinct(RPT_REC_NUM) entity from "+schema+"."+table;
+var sql3 = "SELECT distinct(RPT_REC_NUM) entity from "+schema+"."+table+ " where " +
+" RPT_REC_NUM in (31394,32352,32494,32589,32672,32675,33085,33229,33312,33471,33962)";
 
 if(prod) {	
 	baseDir = 'static2/';
@@ -149,7 +150,7 @@ connection3.query(sql3,function(err, rows) {
 		indexpage += '<a href="'+ rows[i].entity+'sc.html">'+rows[i].entity+ ' Stacked Column Chart </a><br />\n';
 		
 		tmpString += "echo ' writing array for "+rows[i].entity +" ';\n ";
-		tmpString += 'node makeStackedBarChart.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'sb.html;\n';
+		tmpString += 'node makeStackedBarChart.js ' + rows[i].entity + ' >  static2/'+ rows[i].entity+'_sbar.html;\n';
 	//	for (i = 0; i < 1; i++) {
 		//console.log(rows[i].entity);
 		//myRows[i] = rows[i].ITEM;
