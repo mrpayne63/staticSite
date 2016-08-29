@@ -23,7 +23,7 @@ var db = 'localhost';
 var schema = 'HOSPC';
 var table = 'hospc_2013_DATA';
 var lastReport;
-var prod = false;
+var prod = true;
 var entityName = '';
 var baseDir = 'static2/';
 var sql = "select ITEM from "+schema+"."+table+"  where RPT_REC_NUM  = "+entity+"  and  WKSHT_CD = 'S100000' and LINE_NUM = '00100'";

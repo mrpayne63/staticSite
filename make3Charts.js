@@ -304,7 +304,7 @@ connection2.query(sql2,    function(err, rows2) {
     for(var i=0;i<dataArray2.length;i++){
     	dataArray2[i][6]= dataArray2[i][1]+dataArray2[i][2]+dataArray2[i][3]+dataArray2[i][4]+dataArray2[i][5];
     }
-    
+    dataArray2[0][6]= 'Total';
     console.log('var data2 = google.visualization.arrayToDataTable(');
     console.log(dataArray2);
     
@@ -342,7 +342,7 @@ console.log('var options4 = {');//\n chart: {');
 console.log("legend: { position: 'top', maxLines: 5 },");
 console.log("title:'Selected Cost Centers 2009 - 2014',");
 console.log("isStacked:true,");
-console.log(" vAxis: {title: 'Millions'},");
+console.log("vAxis: {title: 'Millions'},");
 console.log("hAxis: {title: 'Years'},");
 console.log("seriesType: 'bars',");
 console.log(" series: {5: {type: 'line'}}");
@@ -352,7 +352,7 @@ console.log(' };');
     console.log("var chart3 = new google.visualization.BarChart(document.getElementById('container'));");
     console.log("var chart = new google.visualization.BarChart(document.getElementById('barcontainer'));");
     console.log("var chart2 = new google.visualization.ColumnChart(document.getElementById('colcontainer'));");
-    console.log("var chart4 = new google.visualization.BarChart(document.getElementById('combocontainer'));");
+    console.log("var chart4 = new google.visualization.ColumnChart(document.getElementById('combocontainer'));");
     console.log(" chart.draw(data, options);");
     console.log(" chart2.draw(data, options);");
     console.log(" chart3.draw(data, options3);");
