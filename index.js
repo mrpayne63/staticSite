@@ -66,5 +66,5 @@ var myArray = getData(entity);
 app.use(serveStatic(__dirname + '/static2'));
 app.use(serveStatic(__dirname + '/static'));
 
-app.listen(8080);
+app.listen(3300);
 console.log("listening 8080");

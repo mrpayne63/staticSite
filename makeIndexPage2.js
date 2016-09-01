@@ -14,7 +14,7 @@ if (!fs.existsSync(baseDir)) {
 }
 
 var connection3 = mysql.createConnection({
-    host : 'localhost',
+    host : db,
     user : 'nodeuser',
     password : 'Cheese2000',
     database : 'HOSPC'
